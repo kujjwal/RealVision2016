@@ -85,9 +85,6 @@ public class PortraitCameraView extends CameraBridgeViewBase implements PreviewC
 
             if (mCamera == null) return false;
 
-            //TODO Lock camera aperture
-            //mCamera.cancelAutoFocus();
-
         /* Now set camera parameters */
             try {
                 Camera.Parameters params = mCamera.getParameters();

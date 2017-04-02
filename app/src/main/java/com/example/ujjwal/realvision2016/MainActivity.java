@@ -256,6 +256,10 @@ public class MainActivity extends AppCompatActivity implements CameraBridgeViewB
     public Mat onCameraFrame(PortraitCameraView.CvCameraViewFrame inputFrame) {
         //TODO this is where we will add image processing
 
+        Camera.Parameters parameters = mOpenCvCameraView.mCamera.getParameters();
+        Log.d(TAG, "1: " + parameters.getExposureCompensation());
+        parameters.setExposureCompensation(20);
+        Log.d(TAG, "2: " + parameters.getExposureCompensation());
         Mat original = new Mat();
 
         double t1 = System.currentTimeMillis();
@@ -352,6 +356,7 @@ public class MainActivity extends AppCompatActivity implements CameraBridgeViewB
             //        Mat ycrcb = (Mat)results.get("ycrcb");
             Rect roi = (Rect)results.get("roi");
             double dist = (Double) results.get("dist");
+            Mat hsv = (Mat) results.get("hsv");
 
             Log.d("->timelog", "Pulling data t: " + (Calendar.getInstance().getTimeInMillis() - _time));
             _time = Calendar.getInstance().getTimeInMillis();
@@ -409,6 +414,7 @@ public class MainActivity extends AppCompatActivity implements CameraBridgeViewB
             Imgproc.line(original, new Point(0, TargetFinder.MIN_Y_COORD), new Point(TargetFinder.RES_X, TargetFinder.MIN_Y_COORD), new Scalar(20, 20, 20), 2);
             Imgproc.line(original, new Point(0, TargetFinder.MAX_Y_COORD), new Point(TargetFinder.RES_X, TargetFinder.MAX_Y_COORD), new Scalar(20, 20, 20), 2);
 
+            //TODO
             updateMat(original);
 
             //writeToFile(fileName, "" + df.format(c.x) + " " + df.format(c.y));//+ " <> Time: " + df.format(System.currentTimeMillis()));

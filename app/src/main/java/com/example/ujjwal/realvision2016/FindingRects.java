@@ -127,12 +127,8 @@ public class FindingRects {
         //HSV Thresholding
         //TODO Test these values further
         //double[] hue = {0.0, 94.43123938879455};
-        double[] hue = {0.0, 180.0};
-        double[] sat = {0.0, 255.0};
-        double[] val = {254.75, 255.0};
-        Mat hsv = new Mat();
-        Imgproc.cvtColor(initial, hsv, Imgproc.COLOR_BGR2HSV);
-        Core.inRange(hsv, new Scalar(hue[0], sat[0], val[0]), new Scalar(hue[1], sat[1], val[1]), hsv);
+
+        Mat hsv = thresh(initial);
 
         //Finding contours
         List<MatOfPoint> conts = new ArrayList<>();
@@ -143,6 +139,8 @@ public class FindingRects {
 
         //Filter conts
         Map<String, Object> fe = new HashMap<>();
+        fe.put("hsv", hsv);
+
         Log.d(TAG, "Num of conts: " + conts.size());
         if(conts.size() > 0) {
             Log.d(TAG, "Num of conts: " + conts.size());
@@ -178,6 +176,7 @@ public class FindingRects {
                     mu = Imgproc.moments(cont);
                     double x = mu.get_m10() / mu.get_m00();
                     if(x < maxX) {
+                        maxX = x;
                         corresponding = cont;
                     }
                 } // Corresponding must be the largest contour
@@ -199,6 +198,16 @@ public class FindingRects {
             fe.put("roi", new Rect());
         }
         return fe;
+    }
+
+    public Mat thresh(Mat initial) {
+        double[] hue = {0.0, 180.0};
+        double[] sat = {0.0, 255.0};
+        double[] val = {230.0, 250.0};
+        Mat hsv = new Mat();
+        Imgproc.cvtColor(initial, hsv, Imgproc.COLOR_BGR2HSV);
+        Core.inRange(hsv, new Scalar(hue[0], sat[0], val[0]), new Scalar(hue[1], sat[1], val[1]), hsv);
+        return hsv;
     }
 
     /**
