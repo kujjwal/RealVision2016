@@ -50,7 +50,6 @@ import java.util.Calendar;
 import java.util.Enumeration;
 import java.util.Map;
 
-//Keshav Sangam is a horrible human being
 public class MainActivity extends AppCompatActivity implements CameraBridgeViewBase.CvCameraViewListener2 {
     //from robot
     protected static final String mTAG = "VisionServer";
@@ -73,11 +72,12 @@ public class MainActivity extends AppCompatActivity implements CameraBridgeViewB
     static String TAG = "Vision649";
     static String fileName = "vision649.txt";
 
-    TargetFinder targetFinder;
+    //TargetFinder targetFinder;
     FindingRects findingRects;
 
     RelativeLayout colorScreen;
     RelativeLayout checkBox;
+    boolean isGreen = false;
     //TODO: Change based on lighting conditions at tourney
     boolean dark = false;
 
@@ -171,7 +171,7 @@ public class MainActivity extends AppCompatActivity implements CameraBridgeViewB
 
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 
-        targetFinder = new TargetFinder();
+        //targetFinder = new TargetFinder();
         findingRects = new FindingRects();
 
         sensorThread = new SensorThread(this);
@@ -199,7 +199,7 @@ public class MainActivity extends AppCompatActivity implements CameraBridgeViewB
         OpenCVLoader.initAsync(OpenCVLoader.OPENCV_VERSION_3_1_0, this,
                 mLoaderCallback);
 
-        targetFinder = new TargetFinder();
+        //targetFinder = new TargetFinder();
         findingRects = new FindingRects();
 
         sensorThread.onActivityResume();
@@ -342,7 +342,7 @@ public class MainActivity extends AppCompatActivity implements CameraBridgeViewB
             //results = findingRects.templateMatching(m, )
             //results = findingRects.templateMatching(m, templ, method);
             //results = targetFinder.shapeDetectTarget10(m);
-            results = findingRects.citrusMethod(m);
+            results = findingRects.ujjwaliscool(m);
             Log.d("->timelog", "SHAPE DETECT TARGET FULL t: " + (Calendar.getInstance().getTimeInMillis() - _time));
             _time = Calendar.getInstance().getTimeInMillis();
 
@@ -374,11 +374,13 @@ public class MainActivity extends AppCompatActivity implements CameraBridgeViewB
                 Imgproc.line(original, new Point(c.x, c.y + 10), new Point(c.x, c.y - 10), new Scalar(255, 0, 0), 2);
                 Imgproc.rectangle(original, roi.tl(), roi.br(), new Scalar(0, 255, 0));
                 // update the background
-                if (c.y > MAX_Y / 2.0 - 5 && c.y < MAX_Y / 2.0 + 5) {
+                //TODO Tweak vals based on what works
+                if (c.y > MAX_Y / 2.0 - 10 && c.y < MAX_Y / 2.0 + 10) {
                     handler.post(new Runnable() {
                         @Override
                         public void run() {
                             colorScreen.setBackgroundColor(green);
+                            isGreen = true;
                         }
                     });
                 } else {
@@ -386,6 +388,7 @@ public class MainActivity extends AppCompatActivity implements CameraBridgeViewB
                         @Override
                         public void run() {
                             colorScreen.setBackgroundColor(red);
+                            isGreen = false;
                         }
                     });
                 }
@@ -393,6 +396,7 @@ public class MainActivity extends AppCompatActivity implements CameraBridgeViewB
                     @Override
                     public void run() {
                         colorScreen.setBackgroundColor(green);
+                        isGreen = true;
                     }
                 });*/
             }
@@ -403,6 +407,7 @@ public class MainActivity extends AppCompatActivity implements CameraBridgeViewB
                     @Override
                     public void run() {
                         colorScreen.setBackgroundColor(red);
+                        isGreen = false;
                     }
                 });
             }
@@ -438,6 +443,8 @@ public class MainActivity extends AppCompatActivity implements CameraBridgeViewB
                 DataOutputStream dos = new DataOutputStream(s.getOutputStream());
 
                 if (c != new Center(-1, -1) && dist != 0.0) {
+                    //dos.writeUTF(isGreen);
+                    dos.writeBoolean(isGreen);
                     dos.writeUTF("" + c.x + ", " + c.y); //EG sent like:  120.2, 222.3
                     dos.writeUTF("Distance, " + dist); //EG sent like: Distance, 100.0
                     dos.flush();
@@ -507,11 +514,9 @@ public class MainActivity extends AppCompatActivity implements CameraBridgeViewB
     // Gets the ip address of phone's network
     private String getLocalIpAddress() {
         try {
-            for (Enumeration<NetworkInterface> en = NetworkInterface
-                    .getNetworkInterfaces(); en.hasMoreElements();) {
+            for (Enumeration<NetworkInterface> en = NetworkInterface.getNetworkInterfaces(); en.hasMoreElements();) {
                 NetworkInterface intf = en.nextElement();
-                for (Enumeration<InetAddress> enumIpAddr = intf
-                        .getInetAddresses(); enumIpAddr.hasMoreElements();) {
+                for (Enumeration<InetAddress> enumIpAddr = intf.getInetAddresses(); enumIpAddr.hasMoreElements();) {
                     InetAddress inetAddress = enumIpAddr.nextElement();
                     if (!inetAddress.isLoopbackAddress()) {
                         return inetAddress.getHostAddress().toString();
