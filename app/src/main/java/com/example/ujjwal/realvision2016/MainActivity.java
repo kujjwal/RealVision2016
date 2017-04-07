@@ -62,7 +62,7 @@ public class MainActivity extends AppCompatActivity implements CameraBridgeViewB
 
     //TODO: Change the IP and Port
     String RIO_SIDE_SERVER_IP = "10.6.49.2";
-    int RIO_SIDE_SERVER_PORT = 8001;
+    int RIO_SIDE_SERVER_PORT = 5805;
 
     int MAX_X = 288, MAX_Y = 352; //cam resolution
     int green = Color.parseColor("#43fa00"), red = Color.parseColor("#fa0000");
@@ -437,9 +437,9 @@ public class MainActivity extends AppCompatActivity implements CameraBridgeViewB
             //blobMat.release();
             //hsv.release();
 
-
             try {
                 Socket s = new Socket(InetAddress.getLocalHost(), RIO_SIDE_SERVER_PORT); //set up on Robot
+                Log.d(TAG, "Connecting socket: " + s.getInetAddress().getHostAddress());
                 DataOutputStream dos = new DataOutputStream(s.getOutputStream());
 
                 if (c != new Center(-1, -1) && dist != 0.0) {
@@ -464,10 +464,10 @@ public class MainActivity extends AppCompatActivity implements CameraBridgeViewB
                 s.close();
             }
             catch (UnknownHostException e){
-                Log.e(TAG, "Unknown Host Error: " + e.getMessage());
+                Log.e(TAG, "Unknown Host Error: " + e.getMessage(), e);
             }
             catch (IOException e){
-                Log.e(TAG, "IO Error: " + e.getMessage());
+                Log.e(TAG, "Here we go, IO Error: " + e.getMessage(), e);
             }
         }
     }

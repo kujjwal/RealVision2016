@@ -117,7 +117,10 @@ public class FindingRects {
      * Third, filter contours(less than 0.5% of img->remove, more than 10% of img->remove, and some others from grip)
      * Fourth, choose topmost contour–Based on x-coords, not y-coords(Angle of phone must be low->Get ret. tape in center of img)*/
     public Map<String, Object> ujjwaliscool(Mat m) {
-        Mat initial = m;
+        //Mat initial = m;
+        //Crop img
+        int width = m.cols() - ((int) (m.cols()*4/23));
+        Mat initial = new Mat(m, new Rect((int) (m.cols()*4/23), 0, width, m.rows()));
 
         //Gaussian Blur
         int radius = 3;
@@ -158,7 +161,7 @@ public class FindingRects {
                 Log.d(TAG, "Height: " + contcpy.height());
                 Log.d(TAG, "Contour Area: " + contArea);
                 //TODO for this condition, add more of the stuff from grip and change some stuff.
-                if(!((percent <= 0.001 || percent >= 0.025 /*TODO Find which percentage works best(Used to be 0.5, 10->Now is 0.1%,3%)*/) /*||  (contcpy.width() > 150 || contcpy.height() > 175 || contcpy.width() < 25 || contcpy.height() < 30)*/)) {
+                if(!((percent <= 0.0025 || percent >= 0.025 /*TODO Find which percentage works best(Used to be 0.5, 10->Now is 0.1%,3%)*/) /*||  (contcpy.width() > 150 || contcpy.height() > 175 || contcpy.width() < 25 || contcpy.height() < 30)*/)) {
                     newConts.add(contcpy);
                 }
             }
@@ -202,7 +205,7 @@ public class FindingRects {
     public Mat thresh(Mat initial) {
         double[] hue = {0.0, 180.0};
         double[] sat = {0.0, 255.0};
-        double[] val = {240.0, 251.5};
+        double[] val = {240.0, 252.5};
         Mat hsv = new Mat();
         Imgproc.cvtColor(initial, hsv, Imgproc.COLOR_BGR2HSV);
         Core.inRange(hsv, new Scalar(hue[0], sat[0], val[0]), new Scalar(hue[1], sat[1], val[1]), hsv);
