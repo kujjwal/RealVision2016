@@ -29,7 +29,6 @@ import org.opencv.core.Mat;
 import org.opencv.core.Point;
 import org.opencv.core.Rect;
 import org.opencv.core.Scalar;
-import org.opencv.imgcodecs.Imgcodecs;
 import org.opencv.imgproc.Imgproc;
 
 import java.io.BufferedReader;
@@ -335,10 +334,10 @@ public class MainActivity extends AppCompatActivity implements CameraBridgeViewB
             }*/
             //results = targetFinder.lightAlg(m);
             //results = findingRects.findingRects(m);
-            File root = new File(Environment.getExternalStorageDirectory(), "Vision");
-            File filepath = new File(root, "Screenshot_20170319-005626~3.png");  // file path to save
-            Mat templ = Imgcodecs.imread(filepath.getPath());
-            int method = Imgproc.TM_CCOEFF_NORMED;
+            //File root = new File(Environment.getExternalStorageDirectory(), "Vision");
+            //File filepath = new File(root, "Screenshot_20170319-005626~3.png");  // file path to save
+            //Mat templ = Imgcodecs.imread(filepath.getPath());
+            //int method = Imgproc.TM_CCOEFF_NORMED;
             //results = findingRects.templateMatching(m, )
             //results = findingRects.templateMatching(m, templ, method);
             //results = targetFinder.shapeDetectTarget10(m);
@@ -438,7 +437,7 @@ public class MainActivity extends AppCompatActivity implements CameraBridgeViewB
             //hsv.release();
 
             try {
-                Socket s = new Socket(InetAddress.getLocalHost(), RIO_SIDE_SERVER_PORT); //set up on Robot
+                Socket s = new Socket(InetAddress.getByName("10.6.49.5"), RIO_SIDE_SERVER_PORT); //set up on Robot
                 Log.d(TAG, "Connecting socket: " + s.getInetAddress().getHostAddress());
                 DataOutputStream dos = new DataOutputStream(s.getOutputStream());
 
@@ -467,7 +466,7 @@ public class MainActivity extends AppCompatActivity implements CameraBridgeViewB
                 Log.e(TAG, "Unknown Host Error: " + e.getMessage(), e);
             }
             catch (IOException e){
-                Log.e(TAG, "Here we go, IO Error: " + e.getMessage(), e);
+                Log.e(TAG, "IO Error: " + e.getMessage(), e);
             }
         }
     }
